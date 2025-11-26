@@ -82,6 +82,12 @@
       color: #2c3e50;
     }
 
+    .form-row input[type="checkbox"] {
+      flex: 0 0 auto;
+      width: auto;
+      text-align: left;
+    }
+
     .participants-header {
       display: flex;
       justify-content: space-between;
@@ -223,6 +229,7 @@
         <div class="hint">
           Dla każdego podaj: imię, wagę, płeć, ile godzin pije w ciągu dnia i
           docelowe maksymalne promile (‰), które „planowo” chce mieć w szczycie formy.
+          Jeśli zaznaczysz tryb kierowcy – kalkulator pilnuje, żeby nie przekroczyć 0.5‰.
         </div>
         <div id="participantsContainer"></div>
       </div>
@@ -343,6 +350,10 @@ Dodaj uczestników, ustaw dla każdego docelowe promile i kliknij:
           <label>Docelowe max promile (‰):</label>
           <input type="number" class="p-cel" min="0.05" step="0.05" value="${preset?.cel || 0.5}" />
         </div>
+        <div class="form-row">
+          <label>Tryb kierowca (limit 0.5‰)</label>
+          <input type="checkbox" class="p-kierowca"${preset?.kierowca ? " checked" : ""} />
+        </div>
       `;
 
       card.appendChild(form);
@@ -350,9 +361,9 @@ Dodaj uczestników, ustaw dla każdego docelowe promile i kliknij:
     }
 
     // Start: przykładowa ekipa
-    dodajUczestnika({imie: "Szef", waga: 85, plec: "mezczyzna", godziny: 8, cel: 0.5});
-    dodajUczestnika({imie: "Deskarz", waga: 75, plec: "mezczyzna", godziny: 6, cel: 0.7});
-    dodajUczestnika({imie: "Narciarka", waga: 60, plec: "kobieta", godziny: 5, cel: 0.4});
+    dodajUczestnika({imie: "Szef", waga: 85, plec: "mezczyzna", godziny: 8, cel: 0.5, kierowca: false});
+    dodajUczestnika({imie: "Deskarz", waga: 75, plec: "mezczyzna", godziny: 6, cel: 0.7, kierowca: false});
+    dodajUczestnika({imie: "Kierowca", waga: 80, plec: "mezczyzna", godziny: 3, cel: 0.4, kierowca: true});
 
     function oblicz() {
       const dniInput = document.getElementById('dni');
@@ -386,13 +397,161 @@ Dodaj uczestników, ustaw dla każdego docelowe promile i kliknij:
       let sumaLitrowEkipa = 0;
       let maxBacGlobal = 0;
       let najgorszyUcz = null;
+      let liczbaKierowcow = 0;
 
       participantCards.forEach((card, idx) => {
         const imie = card.querySelector('.p-imie').value || ("Uczestnik " + (idx + 1));
         const waga = parseFloat(card.querySelector('.p-waga').value);
         const plec = card.querySelector('.p-plec').value;
         const godziny = parseFloat(card.querySelector('.p-godziny').value);
-        const cel = parseFloat(card.querySelector('.p-cel').value);
+        let cel = parseFloat(card.querySelector('.p-cel').value);
+        const kierowca = card.querySelector('.p-kierowca').checked;
 
         if (!waga || !godziny || !cel || waga <= 0 || godziny <= 0 || cel <= 0) {
-          raportUczestnicy += `*
+          raportUczestnicy += `*** ${imie}: coś tu nie gra w danych (waga/godziny/promile) – pomijam w obliczeniach.\n\n`;
+          return;
+        }
+
+        let komentarzKierowca = "";
+        if (kierowca) {
+          liczbaKierowcow += 1;
+          // twardy limit 0.5‰ dla kierowcy
+          if (cel > 0.5) {
+            komentarzKierowca = "   → Tryb kierowca: kalkulator ściął promile do 0.50‰, bo ktoś musi was wywieźć z tych gór.\n";
+            cel = 0.5;
+          } else {
+            komentarzKierowca = "   → Tryb kierowca: trzymamy się limitu 0.5‰ (w praktyce najlepiej 0.0‰, ale kalkulator udaje, że jest miły).\n";
+          }
+        }
+
+        const wspolczynnik = plec === 'mezczyzna' ? 0.68 : 0.55;
+
+        const bacCel = cel;
+
+        // g czystego alkoholu potrzebne do takiego BAC
+        const alkoholGramy = bacCel * waga * wspolczynnik;
+
+        // gramy -> litry wódki 40%
+        const mlCzysty = alkoholGramy / gestoscAlkoholu;
+        const mlWodki = mlCzysty / (procentAlkoholu / 100);
+        const litryNaDzien = mlWodki / 1000;
+
+        const litryCalyWyjazd = litryNaDzien * liczbaDni;
+        sumaLitrowEkipa += litryCalyWyjazd;
+
+        const czasWytrzezwienia = bacCel / spadekNaGodzine;
+        const bacKoniecDnia = Math.max(0, bacCel - spadekNaGodzine * godziny);
+
+        if (bacCel > maxBacGlobal) {
+          maxBacGlobal = bacCel;
+          najgorszyUcz = imie;
+        }
+
+        let komentarzPoziom = "";
+        if (bacCel >= 1.0) {
+          komentarzPoziom = "   → Poziom: HARDCORE. Teraz zaczyna się prawdziwa jazda, ale lekarz by tego nie pochwalił.\n";
+        } else if (bacCel >= 0.5) {
+          komentarzPoziom = "   → Poziom: VIP na stoku. Lepiej, żeby to był tylko żart z kalkulatorem.\n";
+        } else if (bacCel >= 0.3) {
+          komentarzPoziom = "   → Poziom: lekko wesoły, ale nadal w miarę cywilizowany.\n";
+        } else {
+          komentarzPoziom = "   → Poziom: grzeczny turysta, bardziej degustacja niż demolka.\n";
+        }
+
+        raportUczestnicy +=
+`► ${imie} (${plec === "mezczyzna" ? "M" : "K"}, ${waga} kg${kierowca ? ", KIEROWCA" : ""})
+   • Docelowe max promile: ${bacCel.toFixed(2)}‰
+   • Szacowana ilość bimbru 40%: ${litryNaDzien.toFixed(2)} L / dzień
+   • Na cały wyjazd (${liczbaDni} dni): ${litryCalyWyjazd.toFixed(2)} L
+   • Picie dziennie: ${godziny.toFixed(1)} h
+   • Orientacyjny czas do zejścia z maksymalnej mocy: ~${czasWytrzezwienia.toFixed(1)} h
+   • Promile na koniec dnia: ${bacKoniecDnia.toFixed(2)}‰
+${komentarzPoziom}${komentarzKierowca}
+`;
+      });
+
+      const liczbaOsob = participantCards.length;
+
+      const butelki05 = Math.ceil(sumaLitrowEkipa / 0.5);
+      const butelki07 = Math.ceil(sumaLitrowEkipa / 0.7);
+      const butelki1 = Math.ceil(sumaLitrowEkipa / 1.0);
+
+      const koszt05 = butelki05 * cena05;
+      const koszt07 = butelki07 * cena07;
+      const koszt1 = butelki1 * cena1;
+
+      const kosztGlow = koszt07;
+      const kosztNaOsobeGlow = liczbaOsob > 0 ? kosztGlow / liczbaOsob : 0;
+      const kosztGlowEur = kurs > 0 ? kosztGlow / kurs : 0;
+      const kosztNaOsobeGlowEur = kurs > 0 ? kosztNaOsobeGlow / kurs : 0;
+
+      let ostrzezenie = "";
+      if (maxBacGlobal > 1.0) {
+        ostrzezenie =
+"\n🚨 Ktoś ustawił sobie poziom „to już nie jest aperitif, to misja specjalna” (>1.0‰).\n   Gratulujemy odwagi w kalkulatorze. Pamiętajcie, że organizm może mieć inne zdanie.";
+      } else if (maxBacGlobal > 0.5) {
+        ostrzezenie =
+"\n⚠️ Ekipa celuje powyżej 0.5‰. To już jest tryb: „pojazd zostawiamy pod domem, a na stok idziemy bardziej dla zdjęcia niż dla slalomu”.";
+      } else if (maxBacGlobal > 0.3) {
+        ostrzezenie =
+"\nℹ️ Umiarkowany poziom wesołości – jeszcze da się dyskutować, kto jutro pierwszy wstaje po bułki.";
+      } else {
+        ostrzezenie =
+"\n✅ Wygląda na to, że bardziej degustacja niż totalna rozwałka. Instruktor narciarski byłby dumny.";
+      }
+
+      let komentarzKierowcy = "";
+      if (liczbaKierowcow > 0) {
+        komentarzKierowcy =
+`\n🚗 Kierowcy w ekipie: ${liczbaKierowcow}
+   Kalkulator pilnuje, żeby żaden z nich nie przekroczył 0.5‰ (w teorii).
+   W praktyce najlepiej 0.0‰, ale tu robimy sobie tylko żartobliwy plan.`;
+      } else {
+        komentarzKierowcy =
+`\n🚗 Brak oznaczonych kierowców.
+   Czyli albo macie autobus z biura podróży, albo jeszcze nie ustaliliście, kto będzie „taksówką”.`;
+      }
+
+      const tekst = `
+╔══════════════════════════════════════╗
+║      KALKULATOR BIMBRU – TRYB 2      ║
+║  (docelowe promile → ile pić & kupić)║
+╚══════════════════════════════════════╝
+
+📅 WYJAZD:
+   • Liczba uczestników: ${liczbaOsob}
+   • Liczba dni: ${liczbaDni}
+
+👥 UCZESTNICY – PLAN PICIA (PÓŁ ŻARTEM, PÓŁ SERIO):
+
+${raportUczestnicy}
+
+🍻 PODSUMOWANIE DLA CAŁEJ EKIPY:
+   • Łączna ilość bimbru 40% na cały wyjazd: ${sumaLitrowEkipa.toFixed(2)} L
+
+   • Butelki 0.5L: ${butelki05} szt.  (koszt: ${koszt05.toFixed(2)} PLN)
+   • Butelki 0.7L: ${butelki07} szt.  (koszt: ${koszt07.toFixed(2)} PLN)
+   • Butelki 1.0L: ${butelki1} szt.   (koszt: ${koszt1.toFixed(2)} PLN)
+
+💶 KOSZTY (wariant 0.7L jako główny):
+   • Całkowity koszt: ${kosztGlow.toFixed(2)} PLN${kurs > 0 ? `  (~${kosztGlowEur.toFixed(2)} EUR przy kursie ${kurs.toFixed(2)})` : ''}
+   • Koszt na osobę: ${kosztNaOsobeGlow.toFixed(2)} PLN/osobę${kurs > 0 ? `  (~${kosztNaOsobeGlowEur.toFixed(2)} EUR)` : ''}
+
+🏴‍☠️ NAJMOCNIEJ „USTAWIONY” Z GODZINNIKA:
+   • Najwyższe docelowe promile: ${maxBacGlobal.toFixed(2)}‰
+   • Uczestnik: ${najgorszyUcz || "brak danych (wszyscy grzeczni)"}
+
+${ostrzezenie}
+${komentarzKierowcy}
+
+📌 PAMIĘTAJ:
+   • Wszystko liczone orientacyjnie i dla śmiechu.
+   • Prawdziwe życie, policja i lekarze nie korzystają z tego kalkulatora (i może lepiej).
+   • Jak ktoś ma być kierowcą albo chce jeździć normalnie na stoku, to niech ustawia promile na 0.0‰.
+      `;
+
+      wynikiDiv.textContent = tekst;
+    }
+  </script>
+</body>
+</html>
