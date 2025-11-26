@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kalkulator Bimbru - Włoskie Alpy</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #ecf0f1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .header {
+      text-align: center;
+      padding: 20px;
+      background-color: #34495e;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 14px;
+      color: #bdc3c7;
+    }
+
+    .card {
+      background-color: #2c3e50;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #3498db;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .form-row label {
+      flex: 1 1 200px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .form-row input, .form-row select {
+      flex: 1 1 150px;
+      padding: 8px 10px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: 1px solid #7f8c8d;
+      text-align: center;
+      background-color: #ecf0f1;
+      color: #2c3e50;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      background-color: #e74c3c;
+      color: #ecf0f1;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.4);
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background-color: #c0392b;
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+
+    .results {
+      font-family: "Courier New", monospace;
+      white-space: pre-wrap;
+      background-color: #1f2a36;
+      border-radius: 10px;
+      padding: 15px;
+      color: #ecf0f1;
+      margin-top: 10px;
+      line-height: 1.6;
+    }
+
+    .warning {
+      background-color: #e74c3c;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .info {
+      background-color: #3498db;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #95a5a6;
+      padding: 10px 20px 20px 20px;
+    }
+
+    @media (max-width: 600px) {
+      .form-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .form-row input, .form-row select {
+        width: 100%;
+      }
+
+      .btn {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏔️ Kalkulator Bimbru 🍻</h1>
+      <p>Wycieczka na narty i deskę – Włoskie Alpy</p>
+    </div>
+
+    <div class="card">
+      <h2>📋 Dane wycieczki</h2>
+
+      <div class="form-row">
+        <label for="osoby">👥 Liczba uczestników:</label>
+        <input type="number" id="osoby" min="1" value="10" />
+      </div>
+
+      <div class="form-row">
+        <label for="dni">📅 Liczba dni:</label>
+        <input type="number" id="dni" min="1" value="7" />
+      </div>
+
+      <div class="form-row">
+        <label for="porcja">🍺 Porcja dzienna na osobę (litry):</label>
+        <input type="number" id="porcja" min="0.1" step="0.1" value="0.5" />
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🧬 Dane uczestnika (do obliczeń promili)</h2>
+
+      <div class="form-row">
+        <label for="waga">⚖️ Średnia waga uczestnika (kg):</label>
+        <input type="number" id="waga" min="40" max="150" value="75" />
+      </div>
+
+      <div class="form-row">
+        <label for="plec">👤 Płeć (dominująca w grupie):</label>
+        <select id="plec">
+          <option value="mezczyzna">Mężczyzna</option>
+          <option value="kobieta">Kobieta</option>
+        </select>
+      </div>
+
+      <div class="form-row">
+        <label for="godziny">⏰ Przez ile godzin picie (dziennie):</label>
+        <input type="number" id="godziny" min="1" max="24" value="8" />
+      </div>
+
+      <button class="btn" onclick="oblicz()">🧮 OBLICZ ZAPOTRZEBOWANIE + PROMILE</button>
+
+      <div id="wyniki" class="results">
+Wprowadź dane i kliknij "OBLICZ ZAPOTRZEBOWANIE + PROMILE"
+      </div>
+    </div>
+
+    <div class="footer">
+      ⚠️ Pamiętaj o odpowiedzialnym piciu! Bezpieczeństwo na stoku przede wszystkim. 🎿🏂<br>
+      Kalkulator promili ma charakter orientacyjny. Nie jedź na nartach/desce po alkoholu!
+    </div>
+  </div>
+
+  <script>
+    function oblicz() {
+      const osobyInput = document.getElementById('osoby');
+      const dniInput = document.getElementById('dni');
+      const porcjaInput = document.getElementById('porcja');
+      const wagaInput = document.getElementById('waga');
+      const plecSelect = document.getElementById('plec');
+      const godzinyInput = document.getElementById('godziny');
+      const wynikiDiv = document.getElementById('wyniki');
+
+      const liczbaOsob = parseInt(osobyInput.value, 10);
+      const liczbaDni = parseInt(dniInput.value, 10);
+      const dziennaPorcja = parseFloat(porcjaInput.value);
+      const waga = parseFloat(wagaInput.value);
+      const plec = plecSelect.value;
+      const godzinyPicia = parseFloat(godzinyInput.value);
+
+      if (isNaN(liczbaOsob) || isNaN(liczbaDni) || isNaN(dziennaPorcja) ||
+          isNaN(waga) || isNaN(godzinyPicia) ||
+          liczbaOsob <= 0 || liczbaDni <= 0 || dziennaPorcja <= 0 || 
+          waga <= 0 || godzinyPicia <= 0) {
+        wynikiDiv.textContent = "BŁĄD: Wprowadź poprawne liczby (większe od zera).";
+        return;
+      }
+
+      // Obliczenia zapotrzebowania
+      const zapotrzebowanieDzienne = liczbaOsob * dziennaPorcja;
+      const zapotrzebowanieCalkowite = zapotrzebowanieDzienne * liczbaDni;
+
+      const butelki05 = Math.ceil(zapotrzebowanieCalkowite / 0.5);
+      const butelki07 = Math.ceil(zapotrzebowanieCalkowite / 0.7);
+      const butelki1 = Math.ceil(zapotrzebowanieCalkowite / 1.0);
+
+      // Obliczenia promili
+      // Zakładamy wódkę 40% (standardowy bimber)
+      const procentAlkoholu = 40;
+      const gestoscAlkoholu = 0.789; // g/ml
+      
+      // Współczynnik Widmarka (r)
+      const wspolczynnik = plec === 'mezczyzna' ? 0.68 : 0.55;
+      
+      // Ilość czystego alkoholu w gramach dziennie na osobę
+      const alkoholMl = dziennaPorcja * 1000 * (procentAlkoholu / 100);
+      const alkoholGramy = alkoholMl * gestoscAlkoholu;
+      
+      // Stężenie alkoholu we krwi (wzór Widmarka)
+      // BAC = (alkohol w gramach) / (waga * współczynnik)
+      const bacMaksymalne = alkoholGramy / (waga * wspolczynnik);
+      
+      // Metabolizm alkoholu: ~0.15 promila/godzinę
+      const spadekNaGodzine = 0.15;
+      const spadekCalosc = spadekNaGodzine * godzinyPicia;
+      
+      // Średnie stężenie (uproszczony model)
+      const bacSrednie = Math.max(0, bacMaksymalne - (spadekCalosc / 2));
+      
+      // Stężenie po zakończeniu picia (jeśli picie trwa X godzin)
+      const bacPoZakonczeniu = Math.max(0, bacMaksymalne - spadekCalosc);
+      
+      // Czas do wytrzeźwienia (od maksymalnego stężenia)
+      const czasWytrzezwienia = bacMaksymalne / spadekNaGodzine;
+
+      const rekomendacja = `Najlepiej kupić ${butelki07} butelek 0.7L (częsty rozmiar we Włoszech)`;
+
+      let ostrzezenie = '';
+      if (bacSrednie > 0.5) {
+        ostrzezenie = '\n⛔ UWAGA! Stężenie alkoholu jest BARDZO WYSOKIE!\n   NIE JEŹDZIJ NA NARTACH/DESCE! ZAGROŻENIE ŻYCIA!';
+      } else if (bacSrednie > 0.2) {
+        ostrzezenie = '\n⚠️  UWAGA! Stężenie alkoholu przekracza normę!\n   Jazda na nartach/desce jest NIEBEZPIECZNA!';
+      }
+
+      const tekst = `
+╔══════════════════════════════════════╗
+║           WYNIKI OBLICZEŃ            ║
+╚══════════════════════════════════════╝
+
+📊 PODSTAWOWE DANE:
+   • Liczba uczestników: ${liczbaOsob} osób
+   • Długość wyjazdu: ${liczbaDni} dni
+   • Dzienna porcja: ${dziennaPorcja.toFixed(2)} L/osoba
+
+🍻 ZAPOTRZEBOWANIE:
+   • Dziennie: ${zapotrzebowanieDzienne.toFixed(1)} L
+   • CAŁKOWITE: ${zapotrzebowanieCalkowite.toFixed(1)} L
+
+🛒 ILE KUPIĆ BUTELEK:
+   • Butelki 0.5L: ${butelki05} szt.
+   • Butelki 0.7L: ${butelki07} szt.
+   • Butelki 1.0L: ${butelki1} szt.
+
+💡 REKOMENDACJA:
+   ${rekomendacja}
+
+╔══════════════════════════════════════╗
+║      STĘŻENIE ALKOHOLU WE KRWI       ║
+╚══════════════════════════════════════╝
+
+🧬 PARAMETRY:
+   • Waga: ${waga} kg
+   • Płeć: ${plec === 'mezczyzna' ? 'Mężczyzna' : 'Kobieta'}
+   • Czas picia: ${godzinyPicia} godz./dzień
+   • Ilość czystego alkoholu: ${alkoholGramy.toFixed(0)} g/dzień
+
+🩸 PROMILE (orientacyjnie):
+   • Maksymalne stężenie: ${bacMaksymalne.toFixed(2)}‰
+   • Średnie stężenie: ${bacSrednie.toFixed(2)}‰
+   • Po zakończeniu picia: ${bacPoZakonczeniu.toFixed(2)}‰
+   • Czas do wytrzeźwienia: ~${czasWytrzezwienia.toFixed(1)} godz.
+${ostrzezenie}
+
+📌 INFORMACJE:
+   • 0.0-0.2‰ = lekkie działanie
+   • 0.2-0.5‰ = upośledzenie koordynacji
+   • 0.5-1.0‰ = poważne upośledzenie
+   • >1.0‰ = stan zagrożenia życia
+
+⚠️  We Włoszech limit to 0.5‰ (jazda autem)
+⚠️  Jazda na nartach po alkoholu = ZAKAZ!
+      `;
+      wynikiDiv.textContent = tekst;
+    }
+  </script>
+</body>
+</html>
