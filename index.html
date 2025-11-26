@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <title>Kalkulator Bimbru - Włoskie Alpy</title>
+  <title>Kalkulator Bimbru - Indywidualni uczestnicy</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -16,7 +16,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 20px;
       flex: 1;
@@ -35,7 +35,7 @@
 
     .header h1 {
       margin: 0;
-      font-size: 28px;
+      font-size: 26px;
     }
 
     .header p {
@@ -60,30 +60,109 @@
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 10px;
+      gap: 8px;
+      font-size: 13px;
     }
 
     .form-row label {
-      flex: 1 1 200px;
+      flex: 1 1 130px;
       font-weight: bold;
-      margin-bottom: 5px;
     }
 
-    .form-row input, .form-row select {
-      flex: 1 1 150px;
-      padding: 8px 10px;
-      font-size: 16px;
-      border-radius: 5px;
+    .form-row input,
+    .form-row select {
+      flex: 1 1 80px;
+      padding: 5px 7px;
+      font-size: 13px;
+      border-radius: 4px;
       border: 1px solid #7f8c8d;
       text-align: center;
       background-color: #ecf0f1;
       color: #2c3e50;
     }
 
-    .btn {
+    .participants-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .participants-header h2 {
+      margin: 0;
+    }
+
+    .small-btn {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background-color: #27ae60;
+      color: #ecf0f1;
+    }
+
+    .small-btn:hover {
+      background-color: #1e8449;
+    }
+
+    .participant-card {
+      background-color: #1f2a36;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 8px;
+      border: 1px solid #34495e;
+    }
+
+    .participant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .participant-header span {
+      font-weight: bold;
+    }
+
+    .remove-btn {
+      padding: 3px 7px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background-color: #c0392b;
+      color: #ecf0f1;
+    }
+
+    .remove-btn:hover {
+      background-color: #922b21;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #bdc3c7;
+      margin-top: 4px;
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+      .grid-two {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn-main {
       width: 100%;
-      padding: 15px;
-      font-size: 18px;
+      padding: 12px;
+      font-size: 16px;
       font-weight: bold;
       background-color: #e74c3c;
       color: #ecf0f1;
@@ -95,11 +174,11 @@
       transition: background-color 0.2s, transform 0.1s;
     }
 
-    .btn:hover {
+    .btn-main:hover {
       background-color: #c0392b;
     }
 
-    .btn:active {
+    .btn-main:active {
       transform: translateY(1px);
       box-shadow: 0 1px 4px rgba(0,0,0,0.4);
     }
@@ -113,23 +192,7 @@
       color: #ecf0f1;
       margin-top: 10px;
       line-height: 1.6;
-    }
-
-    .warning {
-      background-color: #e74c3c;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    .info {
-      background-color: #3498db;
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
+      font-size: 13px;
     }
 
     .footer {
@@ -138,204 +201,198 @@
       color: #95a5a6;
       padding: 10px 20px 20px 20px;
     }
-
-    @media (max-width: 600px) {
-      .form-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .form-row input, .form-row select {
-        width: 100%;
-      }
-
-      .btn {
-        font-size: 16px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>🏔️ Kalkulator Bimbru 🍻</h1>
-      <p>Wycieczka na narty i deskę – Włoskie Alpy</p>
+      <h1>🏔️ Kalkulator Bimbru – Indywidualni uczestnicy</h1>
+      <p>
+        Ustaw docelowe promile dla każdego uczestnika, a kalkulator policzy ile może pić
+        i ile bimbru trzeba kupić na całą ekipę. Program pisany w ramach żartu 😉
+      </p>
+    </div>
+
+    <div class="grid-two">
+      <!-- LEWA: uczestnicy -->
+      <div class="card">
+        <div class="participants-header">
+          <h2>👥 Uczestnicy</h2>
+          <button class="small-btn" onclick="dodajUczestnika()">+ Dodaj uczestnika</button>
+        </div>
+        <div class="hint">
+          Dla każdego podaj: imię, wagę, płeć, ile godzin pije w ciągu dnia i
+          docelowe maksymalne promile (‰), które „planowo” chce mieć w szczycie formy.
+        </div>
+        <div id="participantsContainer"></div>
+      </div>
+
+      <!-- PRAWA: ustawienia wyjazdu i koszty -->
+      <div class="card">
+        <h2>📅 Dane wyjazdu & 💶 Koszty</h2>
+
+        <div class="form-row">
+          <label for="dni">Liczba dni (1–14):</label>
+          <input type="number" id="dni" min="1" max="14" value="7" />
+        </div>
+
+        <div class="hint">
+          Przyjmujemy bimber / wódkę 40%. Liczenie jest poglądowe – bardziej pod bekę niż pod lekarza.
+        </div>
+
+        <hr style="border-color:#34495e; margin:15px 0;">
+
+        <h3 style="margin-top:0;color:#f1c40f;">Ceny butelek (za sztukę)</h3>
+
+        <div class="form-row">
+          <label for="cena05">0.5 L (PLN):</label>
+          <input type="number" id="cena05" min="0" step="0.1" value="30" />
+        </div>
+
+        <div class="form-row">
+          <label for="cena07">0.7 L (PLN):</label>
+          <input type="number" id="cena07" min="0" step="0.1" value="40" />
+        </div>
+
+        <div class="form-row">
+          <label for="cena1">1.0 L (PLN):</label>
+          <input type="number" id="cena1" min="0" step="0.1" value="50" />
+        </div>
+
+        <div class="form-row">
+          <label for="kurs">Kurs PLN → EUR (opcjonalnie):</label>
+          <input type="number" id="kurs" min="0" step="0.01" value="4.5" />
+        </div>
+
+        <div class="hint">
+          Koszty liczymy głównie dla butelek 0.7L, ale pokażemy też ile wyjdzie na 0.5L i 1.0L.
+        </div>
+      </div>
     </div>
 
     <div class="card">
-      <h2>📋 Dane wycieczki</h2>
-
-      <div class="form-row">
-        <label for="osoby">👥 Liczba uczestników:</label>
-        <input type="number" id="osoby" min="1" value="10" />
-      </div>
-
-      <div class="form-row">
-        <label for="dni">📅 Liczba dni:</label>
-        <input type="number" id="dni" min="1" value="7" />
-      </div>
-
-      <div class="form-row">
-        <label for="porcja">🍺 Porcja dzienna na osobę (litry):</label>
-        <input type="number" id="porcja" min="0.1" step="0.1" value="0.5" />
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>🧬 Dane uczestnika (do obliczeń promili)</h2>
-
-      <div class="form-row">
-        <label for="waga">⚖️ Średnia waga uczestnika (kg):</label>
-        <input type="number" id="waga" min="40" max="150" value="75" />
-      </div>
-
-      <div class="form-row">
-        <label for="plec">👤 Płeć (dominująca w grupie):</label>
-        <select id="plec">
-          <option value="mezczyzna">Mężczyzna</option>
-          <option value="kobieta">Kobieta</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="godziny">⏰ Przez ile godzin picie (dziennie):</label>
-        <input type="number" id="godziny" min="1" max="24" value="8" />
-      </div>
-
-      <button class="btn" onclick="oblicz()">🧮 OBLICZ ZAPOTRZEBOWANIE + PROMILE</button>
+      <button class="btn-main" onclick="oblicz()">🧮 OBLICZ WSZYSTKO</button>
 
       <div id="wyniki" class="results">
-Wprowadź dane i kliknij "OBLICZ ZAPOTRZEBOWANIE + PROMILE"
+Dodaj uczestników, ustaw dla każdego docelowe promile i kliknij:
+"OBLICZ WSZYSTKO".
       </div>
     </div>
 
     <div class="footer">
-      ⚠️ Pamiętaj o odpowiedzialnym piciu! Bezpieczeństwo na stoku przede wszystkim. 🎿🏂<br>
-      Kalkulator promili ma charakter orientacyjny. Nie jedź na nartach/desce po alkoholu!
+      ⚠️ Program humorystyczny – nie traktuj tego jak porady medycznej.  
+      Nie jeźdź na nartach/desce ani nie prowadź auta po alkoholu, nawet jeśli „kalkulator mówi, że się da”. 🎿🍻
     </div>
   </div>
 
   <script>
+    let uczestnikId = 0;
+
+    function domyslneImie(n) {
+      const nazwy = ["Szef", "Bimbrownik", "Snowboardzista", "Narciarz", "Pilot", "Kierowca", "Absorber"];
+      return nazwy[(n - 1) % nazwy.length] + " " + n;
+    }
+
+    function dodajUczestnika(preset) {
+      const container = document.getElementById('participantsContainer');
+      uczestnikId += 1;
+      const id = uczestnikId;
+
+      const card = document.createElement('div');
+      card.className = 'participant-card';
+      card.dataset.id = id;
+
+      const header = document.createElement('div');
+      header.className = 'participant-header';
+
+      const title = document.createElement('span');
+      title.textContent = "Uczestnik " + id;
+      header.appendChild(title);
+
+      const removeBtn = document.createElement('button');
+      removeBtn.className = 'remove-btn';
+      removeBtn.textContent = "Usuń";
+      removeBtn.onclick = () => card.remove();
+      header.appendChild(removeBtn);
+
+      card.appendChild(header);
+
+      const form = document.createElement('div');
+
+      form.innerHTML = `
+        <div class="form-row">
+          <label>Imię / ksywka:</label>
+          <input type="text" class="p-imie" value="${preset?.imie || domyslneImie(id)}" />
+        </div>
+        <div class="form-row">
+          <label>Waga (kg):</label>
+          <input type="number" class="p-waga" min="40" max="150" value="${preset?.waga || 75}" />
+        </div>
+        <div class="form-row">
+          <label>Płeć:</label>
+          <select class="p-plec">
+            <option value="mezczyzna"${preset?.plec === "kobieta" ? "" : " selected"}>Mężczyzna</option>
+            <option value="kobieta"${preset?.plec === "kobieta" ? " selected" : ""}>Kobieta</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Picie dziennie (godziny):</label>
+          <input type="number" class="p-godziny" min="1" max="24" value="${preset?.godziny || 8}" />
+        </div>
+        <div class="form-row">
+          <label>Docelowe max promile (‰):</label>
+          <input type="number" class="p-cel" min="0.05" step="0.05" value="${preset?.cel || 0.5}" />
+        </div>
+      `;
+
+      card.appendChild(form);
+      container.appendChild(card);
+    }
+
+    // Start: przykładowa ekipa
+    dodajUczestnika({imie: "Szef", waga: 85, plec: "mezczyzna", godziny: 8, cel: 0.5});
+    dodajUczestnika({imie: "Deskarz", waga: 75, plec: "mezczyzna", godziny: 6, cel: 0.7});
+    dodajUczestnika({imie: "Narciarka", waga: 60, plec: "kobieta", godziny: 5, cel: 0.4});
+
     function oblicz() {
-      const osobyInput = document.getElementById('osoby');
       const dniInput = document.getElementById('dni');
-      const porcjaInput = document.getElementById('porcja');
-      const wagaInput = document.getElementById('waga');
-      const plecSelect = document.getElementById('plec');
-      const godzinyInput = document.getElementById('godziny');
+      const cena05Input = document.getElementById('cena05');
+      const cena07Input = document.getElementById('cena07');
+      const cena1Input = document.getElementById('cena1');
+      const kursInput = document.getElementById('kurs');
       const wynikiDiv = document.getElementById('wyniki');
 
-      const liczbaOsob = parseInt(osobyInput.value, 10);
-      const liczbaDni = parseInt(dniInput.value, 10);
-      const dziennaPorcja = parseFloat(porcjaInput.value);
-      const waga = parseFloat(wagaInput.value);
-      const plec = plecSelect.value;
-      const godzinyPicia = parseFloat(godzinyInput.value);
+      let liczbaDni = parseInt(dniInput.value, 10);
+      if (isNaN(liczbaDni) || liczbaDni < 1) liczbaDni = 1;
+      if (liczbaDni > 14) liczbaDni = 14;
+      dniInput.value = liczbaDni;
 
-      if (isNaN(liczbaOsob) || isNaN(liczbaDni) || isNaN(dziennaPorcja) ||
-          isNaN(waga) || isNaN(godzinyPicia) ||
-          liczbaOsob <= 0 || liczbaDni <= 0 || dziennaPorcja <= 0 || 
-          waga <= 0 || godzinyPicia <= 0) {
-        wynikiDiv.textContent = "BŁĄD: Wprowadź poprawne liczby (większe od zera).";
+      const cena05 = parseFloat(cena05Input.value) || 0;
+      const cena07 = parseFloat(cena07Input.value) || 0;
+      const cena1 = parseFloat(cena1Input.value) || 0;
+      const kurs = parseFloat(kursInput.value) || 0;
+
+      const procentAlkoholu = 40;
+      const gestoscAlkoholu = 0.789;
+      const spadekNaGodzine = 0.15;
+
+      const participantCards = document.querySelectorAll('.participant-card');
+      if (participantCards.length === 0) {
+        wynikiDiv.textContent = "Dodaj przynajmniej jednego uczestnika – inaczej nie ma komu pić.";
         return;
       }
 
-      // Obliczenia zapotrzebowania
-      const zapotrzebowanieDzienne = liczbaOsob * dziennaPorcja;
-      const zapotrzebowanieCalkowite = zapotrzebowanieDzienne * liczbaDni;
+      let raportUczestnicy = "";
+      let sumaLitrowEkipa = 0;
+      let maxBacGlobal = 0;
+      let najgorszyUcz = null;
 
-      const butelki05 = Math.ceil(zapotrzebowanieCalkowite / 0.5);
-      const butelki07 = Math.ceil(zapotrzebowanieCalkowite / 0.7);
-      const butelki1 = Math.ceil(zapotrzebowanieCalkowite / 1.0);
+      participantCards.forEach((card, idx) => {
+        const imie = card.querySelector('.p-imie').value || ("Uczestnik " + (idx + 1));
+        const waga = parseFloat(card.querySelector('.p-waga').value);
+        const plec = card.querySelector('.p-plec').value;
+        const godziny = parseFloat(card.querySelector('.p-godziny').value);
+        const cel = parseFloat(card.querySelector('.p-cel').value);
 
-      // Obliczenia promili
-      // Zakładamy wódkę 40% (standardowy bimber)
-      const procentAlkoholu = 40;
-      const gestoscAlkoholu = 0.789; // g/ml
-      
-      // Współczynnik Widmarka (r)
-      const wspolczynnik = plec === 'mezczyzna' ? 0.68 : 0.55;
-      
-      // Ilość czystego alkoholu w gramach dziennie na osobę
-      const alkoholMl = dziennaPorcja * 1000 * (procentAlkoholu / 100);
-      const alkoholGramy = alkoholMl * gestoscAlkoholu;
-      
-      // Stężenie alkoholu we krwi (wzór Widmarka)
-      // BAC = (alkohol w gramach) / (waga * współczynnik)
-      const bacMaksymalne = alkoholGramy / (waga * wspolczynnik);
-      
-      // Metabolizm alkoholu: ~0.15 promila/godzinę
-      const spadekNaGodzine = 0.15;
-      const spadekCalosc = spadekNaGodzine * godzinyPicia;
-      
-      // Średnie stężenie (uproszczony model)
-      const bacSrednie = Math.max(0, bacMaksymalne - (spadekCalosc / 2));
-      
-      // Stężenie po zakończeniu picia (jeśli picie trwa X godzin)
-      const bacPoZakonczeniu = Math.max(0, bacMaksymalne - spadekCalosc);
-      
-      // Czas do wytrzeźwienia (od maksymalnego stężenia)
-      const czasWytrzezwienia = bacMaksymalne / spadekNaGodzine;
-
-      const rekomendacja = `Najlepiej kupić ${butelki07} butelek 0.7L (częsty rozmiar we Włoszech)`;
-
-      let ostrzezenie = '';
-      if (bacSrednie > 0.5) {
-        ostrzezenie = '\n⛔ UWAGA! Stężenie alkoholu jest BARDZO WYSOKIE!\n   NIE JEŹDZIJ NA NARTACH/DESCE! ZAGROŻENIE ŻYCIA!';
-      } else if (bacSrednie > 0.2) {
-        ostrzezenie = '\n⚠️  UWAGA! Stężenie alkoholu przekracza normę!\n   Jazda na nartach/desce jest NIEBEZPIECZNA!';
-      }
-
-      const tekst = `
-╔══════════════════════════════════════╗
-║           WYNIKI OBLICZEŃ            ║
-╚══════════════════════════════════════╝
-
-📊 PODSTAWOWE DANE:
-   • Liczba uczestników: ${liczbaOsob} osób
-   • Długość wyjazdu: ${liczbaDni} dni
-   • Dzienna porcja: ${dziennaPorcja.toFixed(2)} L/osoba
-
-🍻 ZAPOTRZEBOWANIE:
-   • Dziennie: ${zapotrzebowanieDzienne.toFixed(1)} L
-   • CAŁKOWITE: ${zapotrzebowanieCalkowite.toFixed(1)} L
-
-🛒 ILE KUPIĆ BUTELEK:
-   • Butelki 0.5L: ${butelki05} szt.
-   • Butelki 0.7L: ${butelki07} szt.
-   • Butelki 1.0L: ${butelki1} szt.
-
-💡 REKOMENDACJA:
-   ${rekomendacja}
-
-╔══════════════════════════════════════╗
-║      STĘŻENIE ALKOHOLU WE KRWI       ║
-╚══════════════════════════════════════╝
-
-🧬 PARAMETRY:
-   • Waga: ${waga} kg
-   • Płeć: ${plec === 'mezczyzna' ? 'Mężczyzna' : 'Kobieta'}
-   • Czas picia: ${godzinyPicia} godz./dzień
-   • Ilość czystego alkoholu: ${alkoholGramy.toFixed(0)} g/dzień
-
-🩸 PROMILE (orientacyjnie):
-   • Maksymalne stężenie: ${bacMaksymalne.toFixed(2)}‰
-   • Średnie stężenie: ${bacSrednie.toFixed(2)}‰
-   • Po zakończeniu picia: ${bacPoZakonczeniu.toFixed(2)}‰
-   • Czas do wytrzeźwienia: ~${czasWytrzezwienia.toFixed(1)} godz.
-${ostrzezenie}
-
-📌 INFORMACJE:
-   • 0.0-0.2‰ = lekkie działanie
-   • 0.2-0.5‰ = upośledzenie koordynacji
-   • 0.5-1.0‰ = poważne upośledzenie
-   • >1.0‰ = stan zagrożenia życia
-
-⚠️  We Włoszech limit to 0.5‰ (jazda autem)
-⚠️  Jazda na nartach po alkoholu = ZAKAZ!
-      `;
-      wynikiDiv.textContent = tekst;
-    }
-  </script>
-</body>
-</html>
+        if (!waga || !godziny || !cel || waga <= 0 || godziny <= 0 || cel <= 0) {
+          raportUczestnicy += `*
